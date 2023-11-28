@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
 
@@ -16,6 +18,33 @@ class MainActivity : AppCompatActivity() {
     lateinit var timerTextView: TextView
     lateinit var timerBinder : TimerService.TimerBinder
     var isConnected = false
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        menuInflater.inflate(R.menu.main, menu)
+
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when(item.itemId) {
+            R.id.play_button -> {
+                if (isConnected) timerBinder.start(100)
+                true
+            }
+            R.id.pause_button -> {
+                if (isConnected) timerBinder.pause()
+                true
+            }
+            R.id.stop_button -> {if (isConnected) {
+                timerBinder.stop()
+                timerTextView.text = "100"}
+                true
+            }
+            else -> false
+        }
+    }
 
     val timerHandler = Handler(Looper.getMainLooper()) {
         timerTextView.text= it.what.toString()
